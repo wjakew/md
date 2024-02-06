@@ -5,6 +5,10 @@
  */
 package com.jakubwawak.md.ui.components.markdownEditor;
 
+import com.jakubwawak.md.ui.components.terminal.TerminalInput;
+import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.KeyModifier;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -17,8 +21,8 @@ import com.vaadin.flow.component.textfield.TextField;
 public class TerminalWindow {
 
     // variables for setting x and y of window
-    public String width = "";
-    public String height = "";
+    public String width = "80%";
+    public String height = "20%";
     public String backgroundStyle = "";
 
     // main login components
@@ -26,6 +30,7 @@ public class TerminalWindow {
     VerticalLayout main_layout;
 
     MarkdownEditor editor;
+    TerminalInput terminal;
 
     /**
      * Constructor
@@ -45,7 +50,7 @@ public class TerminalWindow {
      */
     void prepare_components(){
         // set components
-
+        terminal = new TerminalInput("100%",editor);
     }
 
     /**
@@ -54,6 +59,7 @@ public class TerminalWindow {
     void prepare_dialog(){
         prepare_components();
         // set layout
+        main_layout.add(terminal);
 
         main_layout.setSizeFull();
         main_layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
@@ -65,5 +71,12 @@ public class TerminalWindow {
         main_layout.getStyle().set("--lumo-font-family","Monospace");
         main_dialog.add(main_layout);
         main_dialog.setWidth(width);main_dialog.setHeight(height);
+    }
+
+    /**
+     * Function for closing window
+     */
+    private void closeWindow(){
+        main_dialog.close();
     }
 }

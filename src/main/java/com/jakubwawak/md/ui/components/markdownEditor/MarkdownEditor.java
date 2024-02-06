@@ -12,6 +12,7 @@ import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H6;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
@@ -22,10 +23,13 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.server.StreamResource;
+import com.vaadin.flow.theme.lumo.Lumo;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import com.vladsch.flexmark.parser.Parser;
+import org.yaml.snakeyaml.error.Mark;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -36,6 +40,7 @@ import java.util.Date;
 public class MarkdownEditor extends VerticalLayout {
 
     public String currentValue;
+    public String mode = "LIGHT"; // values - DARK / LIGHT
 
     TextArea editorArea;
 
@@ -64,7 +69,8 @@ public class MarkdownEditor extends VerticalLayout {
         getStyle().set("text-align", "center");
 
         // add theme
-        getStyle().set("background-image","radial-gradient(white,black)");
+        getStyle().set("background-color","transparent");
+        getStyle().set("color","black");
         getStyle().set("--lumo-font-family","Monospace");
         getStyle().set("--lumo-primary-color","pink");
         getStyle().set("border-radius","25px");
@@ -132,6 +138,19 @@ public class MarkdownEditor extends VerticalLayout {
      */
     void prepareLayout(){
 
+        // set color mode
+        if ( mode.equals("DARK") ){
+            this.getElement().setAttribute("theme", Lumo.DARK);
+            getStyle().set("background-image","linear-gradient(gray,black)");
+            getStyle().set("color","black");
+        }
+        else{
+            this.getElement().setAttribute("theme", Lumo.LIGHT);
+            getStyle().set("background-image","linear-gradient(gray,white)");
+            getStyle().set("color","black");
+            editorArea.getStyle().set("color","black");
+        }
+
         prepareHeader();
 
         VerticalLayout leftEditorLayout = new VerticalLayout(new H6("editor"),editorArea);
@@ -159,6 +178,14 @@ public class MarkdownEditor extends VerticalLayout {
      * Function for preparing header data
      */
     void prepareHeader(){
+
+        StreamResource res = new StreamResource("logo.png", () -> {
+            return MarkdownEditor.class.getClassLoader().getResourceAsStream("images/logo.png");
+        });
+        Image logo = new Image(res,"logo");
+        logo.setHeight("5rem");
+        logo.setWidth("5rem");
+
         header = new HorizontalLayout();
         headerMenuBar = new MenuBar();
         headerMenuBar.addThemeVariants(MenuBarVariant.LUMO_CONTRAST,MenuBarVariant.LUMO_PRIMARY);
@@ -177,6 +204,10 @@ public class MarkdownEditor extends VerticalLayout {
         MenuItem subItems3 = subItems.addItem(new HorizontalLayout(VaadinIcon.PLUS.create(),new H6("Add Component")));
         subItems3.setCheckable(false);
         subItems3.setChecked(false);
+
+        MenuItem subItems4 = subItems.addItem(new HorizontalLayout(VaadinIcon.REFRESH.create(),new H6("Refresh")));
+        subItems4.setCheckable(false);
+        subItems4.setChecked(false);
 
         // event handler
         ComponentEventListener<ClickEvent<MenuItem>> listener = event -> {
@@ -199,25 +230,30 @@ public class MarkdownEditor extends VerticalLayout {
             else if (selectedItem.equals(subItems3)){
                 // TODO
             }
+            else if (selectedItem.equals(subItems4)){
+                runRefresh();
+            }
         };
 
         // adding listeners
         subItems1.addClickListener(listener);
         subItems2.addClickListener(listener);
         subItems3.addClickListener(listener);
+        subItems4.addClickListener(listener);
 
         // prepare window layout and components
         FlexLayout center_layout = new FlexLayout();
         center_layout.setSizeFull();
         center_layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         center_layout.setAlignItems(FlexComponent.Alignment.CENTER);
+        center_layout.add(logo);
 
         FlexLayout left_layout = new FlexLayout();
         left_layout.setSizeFull();
         left_layout.setJustifyContentMode(JustifyContentMode.START);
         left_layout.setAlignItems(Alignment.CENTER);
         left_layout.setWidth("80%");
-        left_layout.add(headerMenuBar,refresh_button);
+        left_layout.add(headerMenuBar);
 
         FlexLayout right_layout = new FlexLayout();
         right_layout.setSizeFull();
@@ -243,8 +279,9 @@ public class MarkdownEditor extends VerticalLayout {
      * Function for running terminal window
      */
     private void runContextSuggestion(){
-        Notification.show("Starting context suggestion!");
-        //TODO
+        TerminalWindow tw = new TerminalWindow(this);
+        add(tw.main_dialog);
+        tw.main_dialog.open();
     }
 
     /**

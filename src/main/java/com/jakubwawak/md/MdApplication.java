@@ -16,11 +16,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class MdApplication {
 
+	public static String version = "v1.0.0";
+	public static String build = "md060224REV01";
+
 	/**
 	 * Main function
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		System.out.println(version+"/"+build);
 		SpringApplication.run(MdApplication.class, args);
 	}
 
