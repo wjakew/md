@@ -50,7 +50,7 @@ public class TerminalWindow {
      */
     void prepare_components(){
         // set components
-        terminal = new TerminalInput("100%",editor);
+        terminal = new TerminalInput("100%",editor,this);
     }
 
     /**

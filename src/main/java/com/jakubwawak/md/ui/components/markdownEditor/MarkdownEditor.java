@@ -17,6 +17,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -41,6 +42,7 @@ public class MarkdownEditor extends VerticalLayout {
 
     public String currentValue;
     public String mode = "LIGHT"; // values - DARK / LIGHT
+    public SplitLayout splitLayout;
 
     TextArea editorArea;
 
@@ -48,7 +50,6 @@ public class MarkdownEditor extends VerticalLayout {
     Html htmlPreview;
 
     HorizontalLayout header;
-    MenuBar headerMenuBar;
     Button refresh_button;
     /**
      * Costructor
@@ -100,6 +101,14 @@ public class MarkdownEditor extends VerticalLayout {
         Node document = parser.parse(currentValue);
         String value = "<body><div>"+renderer.render(document)+"</div></body>";
         return value;
+    }
+
+    /**
+     * Function for refreshing preview from other component
+     */
+    public void refreshPreview(){
+        parseToHtml();
+        showNotification("Preview refreshed!");
     }
 
     /**
@@ -165,7 +174,7 @@ public class MarkdownEditor extends VerticalLayout {
         rightPreviewLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         rightPreviewLayout.getStyle().set("text-align", "center");
 
-        SplitLayout splitLayout = new SplitLayout(leftEditorLayout,rightPreviewLayout);
+        splitLayout = new SplitLayout(leftEditorLayout,rightPreviewLayout);
         setSizeFull();
         splitLayout.setSizeFull();
         splitLayout.setSplitterPosition(70);
@@ -178,6 +187,7 @@ public class MarkdownEditor extends VerticalLayout {
      * Function for preparing header data
      */
     void prepareHeader(){
+        header = new HorizontalLayout();
 
         StreamResource res = new StreamResource("logo.png", () -> {
             return MarkdownEditor.class.getClassLoader().getResourceAsStream("images/logo.png");
@@ -185,61 +195,6 @@ public class MarkdownEditor extends VerticalLayout {
         Image logo = new Image(res,"logo");
         logo.setHeight("5rem");
         logo.setWidth("5rem");
-
-        header = new HorizontalLayout();
-        headerMenuBar = new MenuBar();
-        headerMenuBar.addThemeVariants(MenuBarVariant.LUMO_CONTRAST,MenuBarVariant.LUMO_PRIMARY);
-
-        MenuItem aimItem = headerMenuBar.addItem(".md editor");
-        SubMenu subItems = aimItem.getSubMenu();
-
-        MenuItem subItems1 = subItems.addItem(new HorizontalLayout(VaadinIcon.UPLOAD.create(),new H6("Upload")));
-        subItems1.setCheckable(false);
-        subItems1.setChecked(false);
-
-        MenuItem subItems2 = subItems.addItem(new HorizontalLayout(VaadinIcon.EXCHANGE.create(),new H6("Export")));
-        subItems2.setCheckable(false);
-        subItems2.setChecked(false);
-
-        MenuItem subItems3 = subItems.addItem(new HorizontalLayout(VaadinIcon.PLUS.create(),new H6("Add Component")));
-        subItems3.setCheckable(false);
-        subItems3.setChecked(false);
-
-        MenuItem subItems4 = subItems.addItem(new HorizontalLayout(VaadinIcon.REFRESH.create(),new H6("Refresh")));
-        subItems4.setCheckable(false);
-        subItems4.setChecked(false);
-
-        // event handler
-        ComponentEventListener<ClickEvent<MenuItem>> listener = event -> {
-            MenuItem selectedItem = event.getSource();
-            if ( selectedItem.equals(subItems1)){
-                UploadWindow uw = new UploadWindow(this);
-                add(uw.main_dialog);
-                uw.main_dialog.open();
-            }
-            else if (selectedItem.equals(subItems2)){
-                if ( !editorArea.getValue().isEmpty() ){
-                    ExportWindow ex = new ExportWindow(editorArea.getValue());
-                    add(ex.main_dialog);
-                    ex.main_dialog.open();
-                }
-                else{
-                    Notification.show("Don't save empty files... :)");
-                }
-            }
-            else if (selectedItem.equals(subItems3)){
-                // TODO
-            }
-            else if (selectedItem.equals(subItems4)){
-                runRefresh();
-            }
-        };
-
-        // adding listeners
-        subItems1.addClickListener(listener);
-        subItems2.addClickListener(listener);
-        subItems3.addClickListener(listener);
-        subItems4.addClickListener(listener);
 
         // prepare window layout and components
         FlexLayout center_layout = new FlexLayout();
@@ -252,15 +207,11 @@ public class MarkdownEditor extends VerticalLayout {
         left_layout.setSizeFull();
         left_layout.setJustifyContentMode(JustifyContentMode.START);
         left_layout.setAlignItems(Alignment.CENTER);
-        left_layout.setWidth("80%");
-        left_layout.add(headerMenuBar);
 
         FlexLayout right_layout = new FlexLayout();
         right_layout.setSizeFull();
         right_layout.setJustifyContentMode(JustifyContentMode.END);
         right_layout.setAlignItems(Alignment.CENTER);
-        right_layout.add(new H6(LocalDateTime.now().toString().split("T")[0]));
-        right_layout.setWidth("80%");
 
         header.add(left_layout,center_layout,right_layout);
         header.setWidth("100%");
@@ -303,5 +254,18 @@ public class MarkdownEditor extends VerticalLayout {
         htmlPreview = new   Html(parseToHtml());
         editorPreview.removeAll();
         editorPreview.add(htmlPreview);
+    }
+
+
+    // interconnectors
+
+    /**
+     * Function for showing notification on the component
+     * @param notificationText
+     */
+    public void showNotification(String notificationText){
+        Notification notification = Notification.show(notificationText, 5000,
+                Notification.Position.MIDDLE);
+        notification.addThemeVariants(NotificationVariant.LUMO_CONTRAST);
     }
 }
