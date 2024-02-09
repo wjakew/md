@@ -9,6 +9,8 @@ Web application for editing .md files!
 1. Java
 2. Vaadin
 3. Spring-Boot
+4. flexmark-all - java html markdown parser (https://mvnrepository.com/artifact/com.vladsch.flexmark/flexmark-all/0.64.8)
+
 ![board_screenshot](https://github.com/wjakew/md/blob/master/readme_resource/board_screenshot.png)
 #### Core functionality.
 1. Creating and editing .md files.
