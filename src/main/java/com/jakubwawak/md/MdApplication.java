@@ -17,7 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MdApplication {
 
 	public static String version = "v1.0.0";
-	public static String build = "md070224REV01";
+	public static String build = "md080224REV01";
 
 	/**
 	 * Main function

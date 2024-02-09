@@ -32,7 +32,7 @@ public class TemplateView extends VerticalLayout {
      * Constructor
      */
     public TemplateView(){
-        this.getElement().setAttribute("theme", Lumo.DARK);
+        this.getElement().setAttribute("theme", Lumo.LIGHT);
         prepareLayout();
     }
 
@@ -54,8 +54,9 @@ public class TemplateView extends VerticalLayout {
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
         getStyle().set("background-color","black");
+        getStyle().set("color","black");
         getStyle().set("--lumo-font-family","Monospace");
-        getStyle().set("--lumo-primary-color","pink;");
+        getStyle().set("--lumo-primary-color","pink");
     }
 
 }

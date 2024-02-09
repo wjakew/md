@@ -5,8 +5,6 @@
  */
 package com.jakubwawak.md.ui.components.markdownEditor;
 
-import com.jakubwawak.md.ui.components.terminal.TerminalInput;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 
 import java.util.ArrayList;
@@ -36,7 +34,19 @@ public class TerminalInterpreter {
         commandCollection.add("editor rotate 'vert/hori'");
         commandCollection.add("editor focus");
         commandCollection.add("editor refresh");
+        commandCollection.add("component heading1");
+        commandCollection.add("component heading2");
+        commandCollection.add("component heading3");
+        commandCollection.add("component heading4");
+        commandCollection.add("component chapter");
+        commandCollection.add("component blank");
+        commandCollection.add("component break");
+        commandCollection.add("component italic");
+        commandCollection.add("component bold");
+        commandCollection.add("component quote");
+        commandCollection.add("component code");
         commandCollection.add("exit");
+
     }
 
     /**
@@ -64,11 +74,24 @@ public class TerminalInterpreter {
                     terminalWindow.main_dialog.close();
                     return 1;
                 }
+                case "component":
+                {
+                    componentTerminal(userEntry);
+                    return 1;
+                }
+                case "help":
+                {
+                    HelpView hv = new HelpView(this);
+                    editor.add(hv.main_dialog);
+                    hv.main_dialog.open();
+                    return 1;
+                }
             }
             return 1;
         }
         else{
             // terminal empty
+            editor.showNotification("No user entry!");
             return 0;
         }
     }
@@ -147,8 +170,86 @@ public class TerminalInterpreter {
             return 1;
         }
         else{
-            // show
+            // show help (?)
+            editor.showNotification("Wrong terminal input");
             return 0;
         }
+    }
+
+    /**
+     * Function for creating terminal
+     * @param userEntry
+     */
+    public int componentTerminal(String userEntry){
+        String[] words = userEntry.split(" ");
+        if ( words.length == 2 ){
+                switch(words[1]){
+                    case "heading1":
+                    {
+                        editor.addComponent("# Heading level 1");
+                        break;
+                    }
+                    case "heading2":
+                    {
+                        editor.addComponent("## Heading level 2");
+                        break;
+                    }
+                    case "heading3":
+                    {
+                        editor.addComponent("### Heading level 3");
+                        break;
+                    }
+                    case "heading4":
+                    {
+                        editor.addComponent("#### Heading level 4");
+                        break;
+                    }
+                    case "chapter":
+                    {
+                        editor.addComponent("Heading level 1\n" + "===============");
+                        break;
+                    }
+                    case "blank":
+                    {
+                        editor.addComponent("...");
+                        break;
+                    }
+                    case "break":
+                    {
+                        editor.addComponent("<br>");
+                        break;
+                    }
+                    case "italic":
+                    {
+                        editor.addComponent("*italic*");
+                        break;
+                    }
+                    case "bold":
+                    {
+                        editor.addComponent("***bold***");
+                        break;
+                    }
+                    case "quote":
+                    {
+                        editor.addComponent("> your wise quote");
+                        break;
+                    }
+                    case "code":
+                    {
+                        editor.addComponent("```code\nyour interesting code\n```");
+                        break;
+                    }
+                    default:
+                    {
+                        editor.showNotification("No component named "+words[1]);
+                    }
+                }
+            }
+            else{
+                editor.showNotification("Wrong terminal input");
+            }
+            terminalWindow.main_dialog.close();
+            editor.editorArea.focus();
+            return 1;
     }
 }

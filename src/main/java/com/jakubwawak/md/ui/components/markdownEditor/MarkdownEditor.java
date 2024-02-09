@@ -90,16 +90,27 @@ public class MarkdownEditor extends VerticalLayout {
     }
 
     /**
+     * Function for adding component to source
+     * @param component
+     */
+    public void addComponent(String component){
+        editorArea.setValue(editorArea.getValue()+"\n"+component);
+        parseToHtml();
+    }
+
+    /**
      * Function for parsing string to md as HTML
      * @return String
      */
     String parseToHtml(){
         currentValue = editorArea.getValue();
+        editorArea.setValue(currentValue);
         MutableDataSet options = new MutableDataSet();
         Parser parser = Parser.builder(options).build();
         HtmlRenderer renderer = HtmlRenderer.builder(options).build();
         Node document = parser.parse(currentValue);
         String value = "<body><div>"+renderer.render(document)+"</div></body>";
+        editorPreview.getStyle().set("color","black");
         return value;
     }
 
@@ -150,12 +161,12 @@ public class MarkdownEditor extends VerticalLayout {
         // set color mode
         if ( mode.equals("DARK") ){
             this.getElement().setAttribute("theme", Lumo.DARK);
-            getStyle().set("background-image","linear-gradient(gray,black)");
+            //getStyle().set("background-image","linear-gradient(gray,black)");
             getStyle().set("color","black");
         }
         else{
             this.getElement().setAttribute("theme", Lumo.LIGHT);
-            getStyle().set("background-image","linear-gradient(gray,white)");
+            //getStyle().set("background-image","linear-gradient(gray,white)");
             getStyle().set("color","black");
             editorArea.getStyle().set("color","black");
         }
