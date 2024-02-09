@@ -5,16 +5,10 @@
  */
 package com.jakubwawak.md.ui.components.markdownEditor;
 
-import com.jakubwawak.md.ui.components.terminal.TerminalInput;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.KeyModifier;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.Autocomplete;
-import com.vaadin.flow.component.textfield.TextField;
 
 /**
  * Window for showing content on the screen

@@ -3,7 +3,7 @@
  * kubawawak@gmail.com
  * all rights reserved
  */
-package com.jakubwawak.md.ui.components.terminal;
+package com.jakubwawak.md.ui.components.markdownEditor;
 
 import com.jakubwawak.md.ui.components.markdownEditor.MarkdownEditor;
 import com.jakubwawak.md.ui.components.markdownEditor.TerminalInterpreter;
@@ -70,7 +70,7 @@ public class TerminalInput extends VerticalLayout {
             }
             else{
                 String userInput = terminalInput.getValue();
-                // find something simillar
+                // find something similar
                 // TODO
             }
         });
