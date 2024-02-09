@@ -9,10 +9,13 @@ Web application for editing .md files!
 1. Java
 2. Vaadin
 3. Spring-Boot
+![board_screenshot](https://github.com/wjakew/md/blob/master/readme_resource/board_screenshot.png)
 #### Core functionality.
 1. Creating and editing .md files.
 2. Importing / Exporting data.
 3. Fast editing and preview.
+
+![editorfloating_screenshot](https://github.com/wjakew/md/blob/master/readme_resource/editorfloating_screenshot.png)
 #### Editor terminal.
 ![terminal_screenshot](https://github.com/wjakew/md/blob/master/readme_resource/terminal_screenshot.png)
 
